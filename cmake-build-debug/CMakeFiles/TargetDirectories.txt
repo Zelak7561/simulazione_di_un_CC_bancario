@@ -1,0 +1,3 @@
+C:/Users/zelak/CLionProjects/simulazione_di_un_CC_bancario_#2/cmake-build-debug/CMakeFiles/simulazione_di_un_CC_bancario__2.dir
+C:/Users/zelak/CLionProjects/simulazione_di_un_CC_bancario_#2/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/zelak/CLionProjects/simulazione_di_un_CC_bancario_#2/cmake-build-debug/CMakeFiles/rebuild_cache.dir
