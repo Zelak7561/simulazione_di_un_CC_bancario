@@ -48,15 +48,12 @@ public:
     double Dare;
     double Avere;
 
-    double saldo;
-
     string Pin;
     string Puk;
     int Tentativi;
 
     MiniCCB() {
         id = 000;
-        saldo = 0.0;
         Dare = 0;
         Avere = 0;
 
@@ -70,13 +67,13 @@ public:
         id = Id;
     }
 
-    void setSaldo(int Saldo) {
-        saldo = Saldo;
+    void setSaldo(double Saldo) {
+        Avere = Saldo;
     }
 
     //Getter
     double getSaldo() {
-        return saldo;
+        return Avere - Dare;
     }
 
     int getId() {
@@ -87,7 +84,7 @@ public:
     //Gestione Pin
     bool controllo_Pin(string pin) {
         if (Tentativi <= 0) {
-            cout << "\n🔒 Conto bloccato. Troppi tentativi falliti.\n";
+            cout << "\nConto bloccato. Troppi tentativi falliti.\n";
             return false;
         }
 
@@ -98,13 +95,13 @@ public:
 
         Tentativi--;
 
-        cout << "\n❌ PIN errato. Operazione negata." << endl;
-        cout << "🔁 Tentativi rimasti: " << Tentativi << endl;
+        cout << "\nPIN errato. Operazione negata." << endl;
+        cout << "Tentativi rimasti: " << Tentativi << endl;
 
         if (Tentativi == 1) {
-            cout << "⚠️ Attenzione: 1 solo tentativo rimasto prima del blocco del conto!\n";
+            cout << "⚠Attenzione: 1 solo tentativo rimasto prima del blocco del conto!\n";
         } else if (Tentativi == 0) {
-            cout << "🚫 Hai esaurito i tentativi. Il conto è ora bloccato.\n";
+            cout << "Hai esaurito i tentativi. Il conto è ora bloccato.\n";
         }
 
         return false;
@@ -140,7 +137,6 @@ public:
     //Gestione operazioni
     double Saldo(string pin) {
         if (controllo_Pin(pin)) {
-            saldo = Avere - Dare;
             return Avere - Dare;
         }
         return 0.0;
@@ -164,22 +160,22 @@ public:
         }
     }
 
-    void invia(double importo, string pin) {
+    bool invia(double importo, string pin) {
         if (controllo_Pin(pin)) {
             if (importo <= 0) {
                 cout << "Importo non valido. Deve essere maggiore di zero." << endl;
-                return;
+                return false;
             }
 
-            saldo = Avere - Dare;
-
-            if (importo > saldo) {
+            if (importo > Avere - Dare) {
                 cout << "Saldo insufficiente per completare l'operazione." << endl;
-                return;
+                return false;
             }
 
             Dare += importo;
+            return true;
         }
+        return false;
     }
 
     void riceve(double importo) {
@@ -189,13 +185,12 @@ public:
         }
 
         Avere += importo;
-        saldo = Avere - Dare;
     }
+
 };
 
 bool bonifico(MiniCCB &mioCC, string mioPIN, MiniCCB &suoCC, double importo) {
-    if (mioCC.controllo_Pin(mioPIN)) {
-        mioCC.invia(importo, mioPIN);
+    if (mioCC.invia(importo, mioPIN)) {
         suoCC.riceve(importo);
         return true;
     }
@@ -265,7 +260,7 @@ int main() {
                 cout << "\n[Saldo] Inserisci il PIN: ";
                 cin >> pin;
                 cout << "\nSaldo attuale del conto ID " << Conto.getId() << ": "
-                     << Conto.Saldo(pin) << " €\n";
+                     << Conto.Saldo(pin) << " euro\n";
                 break;
 
             case 4:
@@ -281,15 +276,15 @@ int main() {
                          << " a conto " << Conto1.getId() << "...\n";
 
                     if (bonifico(Conto, pin, Conto1, importoB)) {
-                        cout << "\n✅ Bonifico riuscito!\n";
+                        cout << "\nBonifico riuscito!\n";
                         cout << "Saldo aggiornato:\n";
                         cout << "- Conto " << Conto.getId() << ": " << Conto.getSaldo() << " euro\n";
                         cout << "- Conto " << Conto1.getId() << ": " << Conto1.getSaldo() << " euro\n";
                     } else {
-                        cout << "❌ Bonifico fallito. Verifica il PIN o i fondi disponibili.\n";
+                        cout << "Bonifico fallito. Verifica il PIN o i fondi disponibili.\n";
                     }
                 } else {
-                    cout << "❌ Conto destinatario non trovato.\n";
+                    cout << "Conto destinatario non trovato.\n";
                 }
                 break;
 
@@ -299,29 +294,29 @@ int main() {
                 cout << "Inserisci il nuovo PIN [minimo 5 caratteri]: ";
                 cin >> newPin;
                 if (!Conto.cambiaPIN(pin, newPin)) {
-                    cout << "\n❌ Impossibile cambiare il PIN. Verifica di aver inserito correttamente quello vecchio e che il nuovo abbia almeno 5 caratteri.\n";
+                    cout << "\nImpossibile cambiare il PIN. Verifica di aver inserito correttamente quello vecchio e che il nuovo abbia almeno 5 caratteri.\n";
                 } else {
-                    cout << "\n✅ PIN modificato con successo!\n";
+                    cout << "\nPIN modificato con successo!\n";
                 }
                 break;
 
             default:
-                cout << "⚠️ Scelta non valida. Riprova.\n";
+                cout << "⚠Scelta non valida. Riprova.\n";
                 break;
         }
 
         // Controllo blocco per errori PIN
         if (!Conto.controlloTentativi(Conto.Tentativi)) {
-            cout << "\n🚫 Conto bloccato per troppi tentativi errati.\n";
-            cout << "🔐 Inserisci il PUK per sbloccare il conto: ";
+            cout << "\nConto bloccato per troppi tentativi errati.\n";
+            cout << "Inserisci il PUK per sbloccare il conto: ";
             cin >> puk;
-            cout << "🔁 Inserisci un nuovo PIN: ";
+            cout << "Inserisci un nuovo PIN: ";
             cin >> newPin;
             if (Conto.Sblocca(puk, newPin)) {
-                cout << "✅ Conto sbloccato e PIN aggiornato!\n";
+                cout << "Conto sbloccato e PIN aggiornato!\n";
                 ancora = true;
             } else {
-                cout << "❌ Sblocco fallito. Fine sessione.\n";
+                cout << "Sblocco fallito. Fine sessione.\n";
                 ancora = false;
             }
         }
