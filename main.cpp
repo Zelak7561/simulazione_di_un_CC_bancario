@@ -1,6 +1,6 @@
 /*
 
-[8.3] -
+[8.3]
 Modifichiamo la classe MiniCCB per aggiungere la gestione di
 un PIN, richiesto per autorizzare ogni operazione su C/C.
 Il PIN di una istanza della classe è impostato dal costruttore
@@ -9,14 +9,14 @@ passato al metodo che la implementa;
 La classe verifica il PIN e rifiuta l’operazione in caso sia sbagliato;
 Tre errori di fila bloccano il C/C;
 
-[8.4] -
+[8.4]
 Modifichiamo la classe MiniCCB per aggiungere le seguenti
 funzionalità:
 Un metodo che cambi il PIN
 Il PIN deve essere di almeno 5 caratteri
 -bool cambiaPIN(string oldPIN, string newPIN)
 
-[8.5] -
+[8.5]
 Modifichiamo la classe MiniCCB per aggiungere le seguenti
 funzionalità:
 Un codice PUK che possa essere utilizzato per sbloccare un
